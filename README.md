@@ -1,28 +1,24 @@
-# CounterStrike Source Gameserver Packager
+# CounterStrike Global Offensive Gameserver Packager Repo
+This is a boilerplate to build counterstrike source gameserver image for Proxmox.
+
 
 ## Requirements
 
 * Packager installed
 * Proxmox
 
-### MacOSX
-```
-brew install ansible
-```
-
 ## Packer
 Builds Counter Strike Gameserver base on Ubuntu
 
-Check config in working directory gs-debian
+Check config in working directory gs-debian (Gameserver Debian 11 - Buster )
+````bash
+cd gs-debian
 
-### Config
-
-```bash
-packer validate -var-file='credentials.pkr.hcl' gs-cssource.pkr.hcl
-```
+packer validate -var-file='credentials.pkr.hcl' gs-csgo.pkr.hcl
+````
 
 ### Build Gameserver Templae
 
 ```bash
-packer build -var-file='credentials.pkr.hcl' gs-cssource.pkr.hcl
+packer build -var-file='credentials.pkr.hcl' gs-csgo.pkr.hcl
 ```

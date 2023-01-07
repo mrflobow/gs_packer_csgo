@@ -20,7 +20,7 @@ variable "disk_format" {
 
 variable "disk_size" {
   type    = string
-  default = "20G"
+  default = "40G"
 }
 
 variable "disk_storage_pool" {
@@ -68,7 +68,7 @@ source "proxmox-iso" "gameserver" {
   insecure_skip_tls_verify = true
 
 
-  template_description = "CounterStrike Source Gameserver template. Built on ${formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())}"
+  template_description = "CounterStrike GO Gameserver template. Built on ${formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())}"
   node                 = var.proxmox_node
   vm_id = 4001
   network_adapters {
@@ -96,7 +96,7 @@ source "proxmox-iso" "gameserver" {
   cloud_init              = true
   cloud_init_storage_pool = var.cloudinit_storage_pool
 
-  vm_name  = "gs-cssource"
+  vm_name  = "gs-csgo"
   #cpu_type = "EPYC"
   os       = "l26"
   memory   = var.memory
@@ -116,7 +116,7 @@ build {
   }
 
   provisioner "file" {
-    destination = "/etc/sources.list"
+    destination = "/etc/apt/sources.list"
     source      = "files/sources.list"
   }
     # Custom Steam Server Magic
@@ -124,16 +124,21 @@ build {
   #Create steam user
 
    provisioner "shell" {
-      inline = ["useradd -m steam"]
+      inline = [
+        "useradd -m steam",
+        ]
 
    }
   
     # Install required packages
   provisioner "shell" {
       inline = [
+        "sudo apt update",
         "sudo apt install software-properties-common -y",
         "sudo dpkg --add-architecture i386",
         "sudo apt update",
+        "echo steam steam/question select \"I AGREE\" | sudo debconf-set-selections",
+        "echo steam steam/license note '' | sudo debconf-set-selections",
         "sudo apt install lib32gcc-s1 steamcmd -y"
       ]
   }
@@ -147,7 +152,14 @@ build {
   provisioner "shell" {
       inline = [
         "sudo chown steam:steam /home/steam/csgo_install.txt",
-        "sudo -u steam steamcmd +runscript /home/steam/csgo_install.txt"
+        "sudo -u steam /usr/games/steamcmd +runscript /home/steam/csgo_install.txt"
+      ]
+  }
+
+  #Add Steam Token
+  provisioner "shell" {
+      inline = [
+        "sudo -u steam echo ${var.steam_token } /home/steam/.token"
       ]
   }
 }
