@@ -4,7 +4,7 @@ Wants=network-online.target
 After=syslog.target network.target nss-lookup.target network-online.target
 
 [Service]
-#Environment="LD_LIBRARY_PATH=./linux64"
+Environment="LD_LIBRARY_PATH=./linux64"
 #ExecStartPre=/usr/games/steamcmd +force_install_dir "/home/steam/csgo" +login anonymous +app_update 740 validate +quit
 ExecStart=/home/steam/csgo.sh
 User=steam

@@ -45,11 +45,11 @@ variable "network_vlan" {
 
 variable "proxmox_api_token_id" {
   type      = string
-  sensitive = true
 }
 
 variable "proxmox_api_token_secret" {
   type = string
+  sensitive = true
 }
 
 variable "proxmox_api_url" {
@@ -58,6 +58,11 @@ variable "proxmox_api_url" {
 
 variable "proxmox_node" {
   type = string
+}
+
+variable "steam_token" {
+  type = string
+  sensitive = true
 }
 
 source "proxmox-iso" "gameserver" {
@@ -159,7 +164,35 @@ build {
   #Add Steam Token
   provisioner "shell" {
       inline = [
-        "sudo -u steam echo ${var.steam_token } /home/steam/.token"
+        "sudo -u steam echo ${var.steam_token } > /home/steam/.token"
       ]
   }
+
+  provisioner "file" {
+    destination = "/etc/systemd/system/csgo.service"
+    source      = "files/csgo.service"
+  }
+
+  provisioner "file" {
+    destination = "/home/steam/csgo.sh"
+    source      = "files/csgo.sh"
+  }
+
+  provisioner "file" {
+    destination = "/home/steam/csgo/csgo/cfg/server.cfg"
+    source      = "../serverfiles/server.cfg"
+  }
+
+  provisioner "shell" {
+      inline = [
+        "sudo chown steam:steam /home/steam/csgo.sh",
+        "sudo chown steam:steam /home/steam/csgo/csgo/cfg/server.cfg",
+        "sudo chmod u+x /home/steam/csgo.sh",
+        "sudo systemctl daemon-reload",
+        "sudo systemctl enable csgo"
+      ]
+  }
+
+
+
 }

@@ -1,1 +1,2 @@
 gs-debian/credentials.pkr.hcl
+serverfiles/*.cfg

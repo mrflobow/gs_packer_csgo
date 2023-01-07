@@ -1,0 +1,30 @@
+//Hostname of the server
+hostname "myserver"
+
+//Enable logging
+log on
+
+//Console Password
+rcon_password "test1234"
+
+sv_password ""
+
+//Leave 0 for Internet server
+sv_lan 0
+
+sv_tags "myservertag"
+
+//BOT settings
+
+bot_difficulty 2
+
+bot_join_after_player 1   
+
+bot_quota 10 
+
+//Friendly Fire
+mp_friendlyfire "1"   
+
+//Defaul Gamevars
+
+mp_autoteambalance "1" 
